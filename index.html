@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transaction Support Copilot</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f0f4f7;color:#152a43;font:16px system-ui}main{max-width:840px;margin:auto;padding:32px 20px}header{background:#112947;color:white;border-radius:16px;padding:28px;display:flex;align-items:center;justify-content:space-between;gap:20px}h1{margin:0;font-size:clamp(1.4rem,5vw,2.35rem)}p{line-height:1.55}section{background:white;border:1px solid #d6e0ea;border-radius:14px;margin-top:18px;padding:24px}label{font-weight:700}form div{display:flex;gap:8px;margin-top:8px}input{flex:1;min-width:0}input,button{font:inherit;padding:10px 14px;border-radius:8px;border:1px solid #8fa2b6}button{cursor:pointer;background:#e8f0f6;color:#112947}button[type=submit]{background:#135956;color:white;border-color:#135956}small{display:block;margin-top:12px}pre{white-space:pre-wrap;background:#edf3f7;padding:12px}a{color:#135956}
+</style>
+<main>
+<header><div><h1>Transaction Support Copilot</h1><p>Investigate a transaction using its recorded state and the support playbook.</p></div>
+<svg width="80" height="70" viewBox="0 0 80 70" aria-hidden="true" style="flex:none"><rect x="10" y="9" width="50" height="45" rx="9" fill="#d9e8f4"/><path d="M20 22h29m-29 9h23m-23 9h14" stroke="#112947" stroke-width="3"/><circle cx="56" cy="46" r="12" fill="#60a6a0" stroke="#112947" stroke-width="3"/><path d="m64 54 10 10" stroke="#60a6a0" stroke-width="5" stroke-linecap="round"/></svg>
+</header>
+<section>
+<form><label for="question">Support question</label><div><input id="question" required maxlength="500" value="Why is TX-104 still pending?"><button type="submit">Check</button></div></form>
+<small>Demo references <button type="button" data-id="104">Pending</button> <button type="button" data-id="106">Failed</button> <button type="button" data-id="107">Decided</button></small>
+</section>
+<section id="result" aria-live="polite" hidden>
+<h2 id="title"></h2><p id="evidence"></p><pre id="snapshot"></pre>
+<p><strong>Next step</strong> <span id="action"></span></p><p id="draft" hidden></p>
+<a href="/playbook" id="source">Open playbook</a>
+</section>
+</main>
+<script>
+const byId = id => document.getElementById(id);
+const question = byId('question');
+const form = document.querySelector('form');
+const submit = form.querySelector('button');
+document.querySelectorAll('[data-id]').forEach(button => button.onclick = () => {
+  question.value = 'What happened to TX-' + button.dataset.id + '?';
+  form.requestSubmit();
+});
+form.onsubmit = async event => {
+  event.preventDefault();
+  if (submit.disabled) return;
+  submit.disabled = true;
+  byId('result').hidden = true;
+  try {
+    const response = await fetch('/ask', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({question:question.value})});
+    const data = await response.json();
+    if (!response.ok) throw Error(data.error);
+    byId('title').textContent = data.title;
+    byId('evidence').textContent = data.evidence;
+    byId('action').textContent = data.action;
+    byId('snapshot').hidden = !data.snapshot || !data.snapshot.status;
+    byId('snapshot').textContent = JSON.stringify(data.snapshot, null, 2);
+    byId('source').hidden = false; byId('source').href = '/playbook/' + data.route;
+    byId('source').textContent = 'Open playbook · ' + data.route;
+    byId('draft').hidden = !data.draft;
+    byId('draft').textContent = 'LLM draft · ' + data.draft;
+  } catch (error) {
+    byId('title').textContent = 'Request failed';
+    byId('evidence').textContent = error.message;
+    byId('action').textContent = 'Try again.';
+    for (const id of ['snapshot', 'source', 'draft']) byId(id).hidden = true;
+  } finally {
+    byId('result').hidden = false;
+    submit.disabled = false;
+  }
+};
+</script>
+</html>
+
+
+

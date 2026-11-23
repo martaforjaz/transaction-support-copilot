@@ -1,0 +1,77 @@
+{
+  "playbook_only": {
+    "cases": 20,
+    "correct_routes": 8,
+    "unsupported_diagnoses": 12,
+    "median_local_us": 3.5,
+    "failures": [
+      {
+        "question": "TX-104 was delivered twice. Should I replay it?",
+        "expected": "queue",
+        "actual": "decision"
+      },
+      {
+        "question": "Why is TX-105 pending?",
+        "expected": "retry",
+        "actual": "queue"
+      },
+      {
+        "question": "Was TX-105 sent to the dead-letter topic?",
+        "expected": "retry",
+        "actual": "review"
+      },
+      {
+        "question": "TX-106 still pending after a restart?",
+        "expected": "review",
+        "actual": "queue"
+      },
+      {
+        "question": "TX-106 failed with an upstream error",
+        "expected": "review",
+        "actual": "retry"
+      },
+      {
+        "question": "Why is TX-107 still pending?",
+        "expected": "decision",
+        "actual": "queue"
+      },
+      {
+        "question": "TX-999 was approved, right?",
+        "expected": "missing",
+        "actual": "decision"
+      },
+      {
+        "question": "Why is it still pending?",
+        "expected": "missing",
+        "actual": "queue"
+      },
+      {
+        "question": "Why is TX-108 still pending?",
+        "expected": "unavailable",
+        "actual": "queue"
+      },
+      {
+        "question": "TX-109 was approved, right?",
+        "expected": "unavailable",
+        "actual": "decision"
+      },
+      {
+        "question": "Should I retry TX-110?",
+        "expected": "unavailable",
+        "actual": "retry"
+      },
+      {
+        "question": "TX-111 is waiting after a restart",
+        "expected": "unavailable",
+        "actual": "queue"
+      }
+    ]
+  },
+  "state_and_playbook": {
+    "cases": 20,
+    "correct_routes": 20,
+    "unsupported_diagnoses": 0,
+    "median_local_us": 0.9,
+    "failures": []
+  }
+}

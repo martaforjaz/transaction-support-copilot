@@ -1,0 +1,22 @@
+[
+ ["Why is TX-104 still pending?", "queue"],
+ ["TX-104 is stuck after the consumer restart", "queue"],
+ ["TX-104 was delivered twice. Should I replay it?", "queue"],
+ ["Why is TX-105 pending?", "retry"],
+ ["TX-105 failed. Should I retry?", "retry"],
+ ["Was TX-105 sent to the dead-letter topic?", "retry"],
+ ["TX-106 still pending after a restart?", "review"],
+ ["Can we reprocess TX-106 after repeated failures?", "review"],
+ ["TX-106 failed with an upstream error", "review"],
+ ["Was TX-107 processed twice?", "decision"],
+ ["Why is TX-107 still pending?", "decision"],
+ ["TX-107 completed but the customer has questions", "decision"],
+ ["I cannot find TX-999", "missing"],
+ ["TX-999 was approved, right?", "missing"],
+ ["Why is it still pending?", "missing"],
+ ["Compare TX-104 with TX-107", "missing"],
+ ["Why is TX-108 still pending?", "unavailable", {}],
+ ["TX-109 was approved, right?", "unavailable", {"status":"DECIDED","attempts":1}],
+ ["Should I retry TX-110?", "unavailable", {"status":"FAILED","attempts":"3"}],
+ ["TX-111 is waiting after a restart", "unavailable", {"status":"TIMEOUT","attempts":0}]
+]

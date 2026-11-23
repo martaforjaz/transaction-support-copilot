@@ -1,0 +1,9 @@
+[
+  {"id":"queue","title":"Pending with no attempts","keywords":"pending waiting queued restart delayed stuck","evidence":"PENDING with zero recorded attempts means no risk assessment has been recorded.","action":"Cause unconfirmed. Check consumer health and outbox dispatch before considering a replay."},
+  {"id":"retry","title":"Failed risk attempt","keywords":"failed retry error unavailable pending stuck","evidence":"FAILED with fewer than three attempts is consistent with an automatic retry window in a fresh run.","action":"Check retry telemetry and upstream availability. Avoid submitting a second transaction."},
+  {"id":"review","title":"Repeated risk failures","keywords":"failed retry reprocess dead letter exhausted","evidence":"Three or more failed attempts warrant inspection. The transaction snapshot alone does not prove a dead-letter event was emitted.","action":"Inspect retry history and the dead-letter topic, then involve an operator for controlled replay."},
+  {"id":"decision","title":"Decision already recorded","keywords":"duplicate twice completed decided approved declined decision pending","evidence":"DECIDED indicates that a risk decision has already been stored.","action":"Use the existing decision. Compare references if the customer reports a duplicate."},
+  {"id":"missing","title":"Missing transaction reference","keywords":"unknown missing find reference invalid","evidence":"A reference is required to look up a transaction. A 404 means the service did not find it.","action":"Confirm the reference and source feed before taking action."},
+  {"id":"unavailable","title":"Status unavailable","keywords":"offline timeout unreachable unavailable","evidence":"The status lookup failed or returned an unsupported snapshot.","action":"Check service connectivity or escalate for human review. Avoid inferring a transaction status."}
+]
+

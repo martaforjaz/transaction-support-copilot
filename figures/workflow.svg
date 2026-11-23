@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="290" viewBox="0 0 960 290" role="img" aria-labelledby="title">
+<title id="title">Support question and transaction snapshot feed an evidence-backed next step. Route accuracy was 8 of 20 with the playbook alone and 20 of 20 with status lookup.</title>
+<rect width="960" height="290" rx="18" fill="#112947"/>
+<g font-family="system-ui,sans-serif" fill="#f6f9fc">
+<text x="40" y="55" font-size="30" font-weight="700">Transaction Support Copilot</text>
+<g fill="#dce8f2" font-size="17"><text x="40" y="108">Support question</text><text x="40" y="164">Transaction status</text><text x="40" y="220">Support playbook</text></g>
+<g fill="none" stroke="#79bfba" stroke-width="2"><path d="M205 101h55l68 57h55M205 157h178M205 213h55l68-55M451 157h80"/></g>
+<circle cx="417" cy="157" r="33" fill="#70b4af"/><path d="m402 158 10 10 19-21" stroke="#112947" stroke-width="4" fill="none"/>
+<text x="548" y="164" font-size="18">Evidence-backed next step</text>
+<path d="M40 246h880" stroke="#486480"/>
+<text x="40" y="273" font-size="15" fill="#dce8f2">Correct routes · Playbook only 8/20 · Status + playbook 20/20</text>
+</g></svg>
