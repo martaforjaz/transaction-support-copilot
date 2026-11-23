@@ -24,8 +24,6 @@ Open [the local demo](http://127.0.0.1:8765/) and ask “Why is TX-104 still pen
 
 Start the companion [Transaction Risk Integration Service](https://github.com/martaforjaz/transaction-risk-integration-service) using its Compose instructions. Set `RISK_SERVICE_URL=http://127.0.0.1:8080` before launching the demo, then supply a UUID already created by the service. The adapter uses its existing GET endpoint. HTTP 404 produces a reference check, while connectivity and unsupported responses prompt manual review. The API permits a status lookup only and exposes no replay operation.
 
-Optionally set `OLLAMA_URL=http://127.0.0.1:11434` to draft an explanation with a local Ollama model. Set `OLLAMA_MODEL` to an installed model (default `qwen2.5:3b`). The draft is labeled separately and is advisory. Keep this demo local and use synthetic records only.
-
 ## Evaluate
 
 ```sh
@@ -44,9 +42,16 @@ The [fixed scenarios](cases.json) test routing on synthetic snapshots, including
 
 ## Integration and model checks
 
-Verified on the companion Spring Boot, Kafka, and PostgreSQL stack. Both ingress APIs returned the same pending transaction while Kafka was down. The copilot reported zero recorded attempts and left the cause unconfirmed. After Kafka and the consumer restarted, it reported an existing ALLOW decision with one recorded attempt. Replaying the same ingress request returned the existing result. [Integration recording](stack-results.json).
+Verified on the companion Spring Boot, Kafka, and PostgreSQL stack. Both ingress APIs returned the same pending transaction while Kafka was down. The copilot reported zero recorded attempts and left the cause unconfirmed. After Kafka and the consumer restarted, it reported an existing ALLOW decision with one recorded attempt. Replaying the same ingress request returned the existing result. Two Kafka redeliveries left the stored decision and attempt count unchanged. [Raw integration results](stack-results.json).
 
 Run `python verify_stack.py` against an already running **local, disposable** companion Compose stack. This stops Kafka, sends the same synthetic transaction through both ingress APIs, then restarts the application consumer with Kafka available. It checks the pending answer before the restart and checks that the recovered transaction holds a single decision afterwards. Use `RISK_SERVICE_DIR` if the companion repository is in a different directory.
 
-Run `python evaluate_model.py` with Ollama configured to capture explanations, attached evidence, and per-request latency on the fixed scenarios. Assess the drafts against the evidence and action in each row. The three browser captures in the demo show fixture mode with the optional draft disabled.
+### Local LLM evaluation
 
+We tested Qwen 2.5 (0.5B) through Ollama on the same 20 synthetic questions. A manual review compared each draft with the snapshot and playbook action. Seventeen drafts made an unsupported claim or suggested an unsupported action. The remaining three omitted the required next step. The application attached the correct playbook entry in every scenario by taking the link from its deterministic router.
+
+For example, the model said TX-105 had reached the dead-letter topic when the snapshot established only one failed attempt. It also confirmed that TX-107 had been processed twice even though the snapshot only established that a decision existed. The browser demo therefore displays verified evidence and playbook guidance. Free-text generation is an offline experiment.
+
+Median elapsed time was 674 ms and p95 was 7,045 ms, including the initial model load. The measurement covers fixture routing plus the local model request on this machine. [Drafts, timings, and manual review notes](model-results.json).
+
+To reproduce, start Ollama, pull `qwen2.5:0.5b`, set `OLLAMA_URL=http://127.0.0.1:11434` and `OLLAMA_MODEL=qwen2.5:0.5b`, then run `python evaluate_model.py`. Review new drafts against the snapshot and playbook. Model output and timings may vary.
