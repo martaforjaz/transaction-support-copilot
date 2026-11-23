@@ -16,7 +16,7 @@
 </section>
 <section id="result" aria-live="polite" hidden>
 <h2 id="title"></h2><p id="evidence"></p><pre id="snapshot"></pre>
-<p><strong>Next step</strong> <span id="action"></span></p><p id="draft" hidden></p>
+<p><strong>Next step</strong> <span id="action"></span></p>
 <a href="/playbook" id="source">Open playbook</a>
 </section>
 </main>
@@ -44,14 +44,12 @@ form.onsubmit = async event => {
     byId('snapshot').hidden = !data.snapshot || !data.snapshot.status;
     byId('snapshot').textContent = JSON.stringify(data.snapshot, null, 2);
     byId('source').hidden = false; byId('source').href = '/playbook/' + data.route;
-    byId('source').textContent = 'Open playbook · ' + data.route;
-    byId('draft').hidden = !data.draft;
-    byId('draft').textContent = 'LLM draft · ' + data.draft;
+    byId('source').textContent = 'Open playbook Â· ' + data.route;
   } catch (error) {
     byId('title').textContent = 'Request failed';
     byId('evidence').textContent = error.message;
     byId('action').textContent = 'Try again.';
-    for (const id of ['snapshot', 'source', 'draft']) byId(id).hidden = true;
+    for (const id of ['snapshot', 'source']) byId(id).hidden = true;
   } finally {
     byId('result').hidden = false;
     submit.disabled = false;

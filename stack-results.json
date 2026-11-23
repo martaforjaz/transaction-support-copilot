@@ -2,9 +2,9 @@
   "duplicate_before_restart": true,
   "pending": {
     "route": "queue",
-    "reference": "3BB5B24C-481F-4EA0-88AA-8C88B128C106",
+    "reference": "C3FD45B5-2252-4B1B-ADDF-590A23ADB892",
     "snapshot": {
-      "id": "3bb5b24c-481f-4ea0-88aa-8c88b128c106",
+      "id": "c3fd45b5-2252-4b1b-addf-590a23adb892",
       "amountMinor": 1250,
       "currency": "EUR",
       "status": "PENDING",
@@ -17,9 +17,9 @@
   },
   "recovered": {
     "route": "decision",
-    "reference": "3BB5B24C-481F-4EA0-88AA-8C88B128C106",
+    "reference": "C3FD45B5-2252-4B1B-ADDF-590A23ADB892",
     "snapshot": {
-      "id": "3bb5b24c-481f-4ea0-88aa-8c88b128c106",
+      "id": "c3fd45b5-2252-4b1b-addf-590a23adb892",
       "amountMinor": 1250,
       "currency": "EUR",
       "status": "DECIDED",
@@ -30,5 +30,6 @@
     "evidence": "DECIDED indicates that a risk decision has already been stored.",
     "action": "Use the existing decision. Compare references if the customer reports a duplicate."
   },
-  "duplicate_after_restart": true
+  "duplicate_after_restart": true,
+  "kafka_redeliveries_preserved_decision": true
 }

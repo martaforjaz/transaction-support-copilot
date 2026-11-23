@@ -1,7 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from copilot import PLAYBOOK, ROOT, answer, explain
+from copilot import PLAYBOOK, ROOT, answer
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -36,7 +36,6 @@ class Handler(BaseHTTPRequestHandler):
             self.send(400, b'{"error":"Enter a question of up to 500 characters."}')
             return
         result = answer(question)
-        result["draft"] = explain(question, result)
         self.send(200, json.dumps(result).encode())
 
 

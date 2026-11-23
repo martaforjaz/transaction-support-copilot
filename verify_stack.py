@@ -14,8 +14,8 @@ RISK = Path(os.environ.get("RISK_SERVICE_DIR", Path(__file__).resolve().parent.p
 BASE = "http://127.0.0.1:8080"
 
 
-def compose(*args):
-    subprocess.run(["docker", "compose", *args], cwd=RISK, check=True)
+def compose(*args, stdin=None):
+    subprocess.run(["docker", "compose", *args], cwd=RISK, check=True, input=stdin, text=True)
 
 
 def post(path, payload):
@@ -61,9 +61,20 @@ def main():
     recovered = wait_for(decided)
     assert recovered["snapshot"]["attempts"] == 1, recovered
     assert post("/transactions/ledger", ledger) == recovered["snapshot"], recovered
+    event = json.dumps({"id": reference, "attempt": 1, "maxAttempt": 3})
+    compose("exec", "-T", "kafka", "/opt/kafka/bin/kafka-console-producer.sh",
+            "--bootstrap-server", "kafka:9092", "--topic", "risk.evaluate",
+            stdin=event + "\n" + event + "\n")
+    # The service configures one partition. A subsequent decision is a
+    # consumption barrier for both duplicate messages ahead of it.
+    barrier = str(uuid4())
+    post("/transactions/gateway", {**gateway, "id": barrier})
+    wait_for(lambda: answer(barrier)["route"] == "decision")
+    assert answer(question)["snapshot"] == recovered["snapshot"], recovered
     print(json.dumps({"duplicate_before_restart": first == duplicate,
                       "pending": pending, "recovered": recovered,
-                      "duplicate_after_restart": True}, indent=2))
+                      "duplicate_after_restart": True,
+                      "kafka_redeliveries_preserved_decision": True}, indent=2))
 
 
 if __name__ == "__main__":

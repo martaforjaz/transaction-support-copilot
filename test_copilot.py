@@ -2,8 +2,6 @@ import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
-from urllib.error import HTTPError
-from urllib.request import urlopen
 
 from copilot import lookup, answer
 from evaluate import evaluate
@@ -27,6 +25,14 @@ class Tests(unittest.TestCase):
         def unexpected(reference):
             self.fail("Lookup must not run for an ambiguous reference")
         self.assertIsNone(answer("TX-104 and TX-107", unexpected)["reference"])
+
+    def test_missing_and_invalid_evidence_requires_review(self):
+        missing = answer("Why is it pending?")
+        self.assertEqual(missing["route"], "missing")
+        self.assertIn("Confirm the reference", missing["action"])
+        unavailable = answer("TX-104", lambda reference: {})
+        self.assertEqual(unavailable["route"], "unavailable")
+        self.assertIn("human review", unavailable["action"])
 
     def test_http_contract(self):
         with ThreadingHTTPServer(("127.0.0.1", 0), LookupHandler) as server:

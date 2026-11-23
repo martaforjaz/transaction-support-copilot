@@ -1,0 +1,293 @@
+{
+  "model": "qwen2.5:0.5b",
+  "runs": [
+    {
+      "question": "Why is TX-104 still pending?",
+      "expected_route": "queue",
+      "route": "queue",
+      "evidence": "PENDING with zero recorded attempts means no risk assessment has been recorded.",
+      "action": "Cause unconfirmed. Check consumer health and outbox dispatch before considering a replay.",
+      "source": "/playbook/queue",
+      "draft": "TX-104 is still pending because no risk assessment has been recorded.",
+      "latency_ms": 7045,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Presents the absence of a recorded assessment as the cause and omits the check."
+      }
+    },
+    {
+      "question": "TX-104 is stuck after the consumer restart",
+      "expected_route": "queue",
+      "route": "queue",
+      "evidence": "PENDING with zero recorded attempts means no risk assessment has been recorded.",
+      "action": "Cause unconfirmed. Check consumer health and outbox dispatch before considering a replay.",
+      "source": "/playbook/queue",
+      "draft": "TX-104 is stuck after the consumer restart. The evidence indicates that no risk assessment has been recorded, and the consumer health and outbox dispatch should be checked before considering a replay.",
+      "latency_ms": 7747,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Repeats the alleged restart and stalled consumer as established facts."
+      }
+    },
+    {
+      "question": "TX-104 was delivered twice. Should I replay it?",
+      "expected_route": "queue",
+      "route": "queue",
+      "evidence": "PENDING with zero recorded attempts means no risk assessment has been recorded.",
+      "action": "Cause unconfirmed. Check consumer health and outbox dispatch before considering a replay.",
+      "source": "/playbook/queue",
+      "draft": "TX-104 was delivered twice, so you should not replay it.",
+      "latency_ms": 3054,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Claims the transaction was delivered twice without delivery telemetry."
+      }
+    },
+    {
+      "question": "Why is TX-105 pending?",
+      "expected_route": "retry",
+      "route": "retry",
+      "evidence": "FAILED with fewer than three attempts is consistent with an automatic retry window in a fresh run.",
+      "action": "Check retry telemetry and upstream availability. Avoid submitting a second transaction.",
+      "source": "/playbook/retry",
+      "draft": "TX-105 is pending because the evidence indicates that fewer than three attempts were made, which is consistent with an automatic retry window in a fresh run.",
+      "latency_ms": 5240,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Calls the transaction pending despite a FAILED snapshot and assigns a cause."
+      }
+    },
+    {
+      "question": "TX-105 failed. Should I retry?",
+      "expected_route": "retry",
+      "route": "retry",
+      "evidence": "FAILED with fewer than three attempts is consistent with an automatic retry window in a fresh run.",
+      "action": "Check retry telemetry and upstream availability. Avoid submitting a second transaction.",
+      "source": "/playbook/retry",
+      "draft": "TX-105 failed with fewer than three attempts. Should you retry?",
+      "latency_ms": 1435,
+      "review": {
+        "verdict": "incomplete",
+        "note": "Reports the failed attempt correctly but omits the check and advises no concrete next step."
+      }
+    },
+    {
+      "question": "Was TX-105 sent to the dead-letter topic?",
+      "expected_route": "retry",
+      "route": "retry",
+      "evidence": "FAILED with fewer than three attempts is consistent with an automatic retry window in a fresh run.",
+      "action": "Check retry telemetry and upstream availability. Avoid submitting a second transaction.",
+      "source": "/playbook/retry",
+      "draft": "TX-105 was sent to the dead-letter topic, and the evidence indicates that the transaction was not successful.",
+      "latency_ms": 373,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Claims a dead-letter event without evidence."
+      }
+    },
+    {
+      "question": "TX-106 still pending after a restart?",
+      "expected_route": "review",
+      "route": "review",
+      "evidence": "Three or more failed attempts warrant inspection. The transaction snapshot alone does not prove a dead-letter event was emitted.",
+      "action": "Inspect retry history and the dead-letter topic, then involve an operator for controlled replay.",
+      "source": "/playbook/review",
+      "draft": "TX-106 is still pending after a restart. The transaction snapshot alone does not prove a dead-letter event was emitted.",
+      "latency_ms": 456,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Repeats the alleged restart and pending status despite a FAILED snapshot."
+      }
+    },
+    {
+      "question": "Can we reprocess TX-106 after repeated failures?",
+      "expected_route": "review",
+      "route": "review",
+      "evidence": "Three or more failed attempts warrant inspection. The transaction snapshot alone does not prove a dead-letter event was emitted.",
+      "action": "Inspect retry history and the dead-letter topic, then involve an operator for controlled replay.",
+      "source": "/playbook/review",
+      "draft": "We cannot reprocess TX-106 after repeated failures because the transaction snapshot alone does not prove a dead-letter event was emitted.",
+      "latency_ms": 1267,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Rules out reprocessing when the playbook only calls for operator inspection."
+      }
+    },
+    {
+      "question": "TX-106 failed with an upstream error",
+      "expected_route": "review",
+      "route": "review",
+      "evidence": "Three or more failed attempts warrant inspection. The transaction snapshot alone does not prove a dead-letter event was emitted.",
+      "action": "Inspect retry history and the dead-letter topic, then involve an operator for controlled replay.",
+      "source": "/playbook/review",
+      "draft": "TX-106 failed with an upstream error. Three or more failed attempts warrant inspection. The transaction snapshot alone does not prove a dead-letter event was emitted.",
+      "latency_ms": 577,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Attributes the failures to an upstream error without evidence."
+      }
+    },
+    {
+      "question": "Was TX-107 processed twice?",
+      "expected_route": "decision",
+      "route": "decision",
+      "evidence": "DECIDED indicates that a risk decision has already been stored.",
+      "action": "Use the existing decision. Compare references if the customer reports a duplicate.",
+      "source": "/playbook/decision",
+      "draft": "The evidence indicates that a risk decision has already been stored, and the customer has reported a duplicate. Therefore, the answer is \"Yes, TX-107 was processed twice.\"",
+      "latency_ms": 646,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Confirms duplicate processing from a snapshot that only shows one decision."
+      }
+    },
+    {
+      "question": "Why is TX-107 still pending?",
+      "expected_route": "decision",
+      "route": "decision",
+      "evidence": "DECIDED indicates that a risk decision has already been stored.",
+      "action": "Use the existing decision. Compare references if the customer reports a duplicate.",
+      "source": "/playbook/decision",
+      "draft": "TX-107 is still pending because the decision has already been stored in the system.",
+      "latency_ms": 357,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Calls the transaction pending despite a stored decision."
+      }
+    },
+    {
+      "question": "TX-107 completed but the customer has questions",
+      "expected_route": "decision",
+      "route": "decision",
+      "evidence": "DECIDED indicates that a risk decision has already been stored.",
+      "action": "Use the existing decision. Compare references if the customer reports a duplicate.",
+      "source": "/playbook/decision",
+      "draft": "The customer has reported a duplicate decision, so the decision has already been stored.",
+      "latency_ms": 662,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Claims a reported duplicate that is not present in the question or snapshot."
+      }
+    },
+    {
+      "question": "I cannot find TX-999",
+      "expected_route": "missing",
+      "route": "missing",
+      "evidence": "A reference is required to look up a transaction. A 404 means the service did not find it.",
+      "action": "Confirm the reference and source feed before taking action.",
+      "source": "/playbook/missing",
+      "draft": "I cannot find TX-999. A 404 means the service did not find it.",
+      "latency_ms": 513,
+      "review": {
+        "verdict": "incomplete",
+        "note": "Reports lookup failure but omits reference and source-feed verification."
+      }
+    },
+    {
+      "question": "TX-999 was approved, right?",
+      "expected_route": "missing",
+      "route": "missing",
+      "evidence": "A reference is required to look up a transaction. A 404 means the service did not find it.",
+      "action": "Confirm the reference and source feed before taking action.",
+      "source": "/playbook/missing",
+      "draft": "TX-999 was approved, right?",
+      "latency_ms": 1762,
+      "review": {
+        "verdict": "incomplete",
+        "note": "Repeats the question and never asks for the correct reference."
+      }
+    },
+    {
+      "question": "Why is it still pending?",
+      "expected_route": "missing",
+      "route": "missing",
+      "evidence": "A reference is required to look up a transaction. A 404 means the service did not find it.",
+      "action": "Confirm the reference and source feed before taking action.",
+      "source": "/playbook/missing",
+      "draft": "It is still pending because a 404 error indicates that the service did not find the requested transaction.",
+      "latency_ms": 686,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Infers pending status and a 404 even though there was no reference to look up."
+      }
+    },
+    {
+      "question": "Compare TX-104 with TX-107",
+      "expected_route": "missing",
+      "route": "missing",
+      "evidence": "A reference is required to look up a transaction. A 404 means the service did not find it.",
+      "action": "Specify one transaction reference so its status can be checked.",
+      "source": "/playbook/missing",
+      "draft": "Compare TX-104 with TX-107. A 404 means the service did not find it.",
+      "latency_ms": 1286,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Implies a 404 when the system skipped lookup due to ambiguous references."
+      }
+    },
+    {
+      "question": "Why is TX-108 still pending?",
+      "expected_route": "unavailable",
+      "route": "unavailable",
+      "evidence": "The status lookup failed or returned an unsupported snapshot.",
+      "action": "Check service connectivity or escalate for human review. Avoid inferring a transaction status.",
+      "source": "/playbook/unavailable",
+      "draft": "TX-108 is still pending because the status lookup failed or returned an unsupported snapshot.",
+      "latency_ms": 276,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Infers pending status and the cause from an unavailable snapshot."
+      }
+    },
+    {
+      "question": "TX-109 was approved, right?",
+      "expected_route": "unavailable",
+      "route": "unavailable",
+      "evidence": "The status lookup failed or returned an unsupported snapshot.",
+      "action": "Check service connectivity or escalate for human review. Avoid inferring a transaction status.",
+      "source": "/playbook/unavailable",
+      "draft": "TX-109 was approved, but the status lookup failed or returned an unsupported snapshot. The status is DECIDED, and the service connectivity has been checked or escalated for human review.",
+      "latency_ms": 879,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Claims approval and completed escalation from an invalid snapshot."
+      }
+    },
+    {
+      "question": "Should I retry TX-110?",
+      "expected_route": "unavailable",
+      "route": "unavailable",
+      "evidence": "The status lookup failed or returned an unsupported snapshot.",
+      "action": "Check service connectivity or escalate for human review. Avoid inferring a transaction status.",
+      "source": "/playbook/unavailable",
+      "draft": "The status lookup failed or returned an unsupported snapshot. Therefore, it is recommended to retry the transaction.",
+      "latency_ms": 359,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Recommends a transaction retry despite unavailable evidence."
+      }
+    },
+    {
+      "question": "TX-111 is waiting after a restart",
+      "expected_route": "unavailable",
+      "route": "unavailable",
+      "evidence": "The status lookup failed or returned an unsupported snapshot.",
+      "action": "Check service connectivity or escalate for human review. Avoid inferring a transaction status.",
+      "source": "/playbook/unavailable",
+      "draft": "TX-111 is waiting after a restart. The status lookup failed or returned an unsupported snapshot. The cause is not clear without more information.",
+      "latency_ms": 563,
+      "review": {
+        "verdict": "unsupported",
+        "note": "Repeats the claim of waiting after restart without verifying either condition."
+      }
+    }
+  ],
+  "summary": {
+    "drafts": 20,
+    "with_unsupported_claim_or_action": 17,
+    "incomplete_without_unsupported_claim": 3,
+    "verified_application_source_links": 20,
+    "median_ms": 674.0,
+    "p95_nearest_rank_ms": 7045
+  }
+}
