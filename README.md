@@ -44,6 +44,9 @@ The [fixed scenarios](cases.json) test routing on synthetic snapshots, including
 
 ## Integration and model checks
 
+Verified on the companion Spring Boot, Kafka, and PostgreSQL stack. Both ingress APIs returned the same pending transaction while Kafka was down. The copilot reported zero recorded attempts and left the cause unconfirmed. After Kafka and the consumer restarted, it reported an existing ALLOW decision with one recorded attempt. Replaying the same ingress request returned the existing result. [Integration recording](stack-results.json).
+
 Run `python verify_stack.py` against an already running **local, disposable** companion Compose stack. This stops Kafka, sends the same synthetic transaction through both ingress APIs, then restarts the application consumer with Kafka available. It checks the pending answer before the restart and checks that the recovered transaction holds a single decision afterwards. Use `RISK_SERVICE_DIR` if the companion repository is in a different directory.
 
 Run `python evaluate_model.py` with Ollama configured to capture explanations, attached evidence, and per-request latency on the fixed scenarios. Assess the drafts against the evidence and action in each row. The three browser captures in the demo show fixture mode with the optional draft disabled.
+

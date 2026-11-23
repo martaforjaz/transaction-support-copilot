@@ -1,0 +1,34 @@
+{
+  "duplicate_before_restart": true,
+  "pending": {
+    "route": "queue",
+    "reference": "3BB5B24C-481F-4EA0-88AA-8C88B128C106",
+    "snapshot": {
+      "id": "3bb5b24c-481f-4ea0-88aa-8c88b128c106",
+      "amountMinor": 1250,
+      "currency": "EUR",
+      "status": "PENDING",
+      "attempts": 0,
+      "decision": null
+    },
+    "title": "Pending with no attempts",
+    "evidence": "PENDING with zero recorded attempts means no risk assessment has been recorded.",
+    "action": "Cause unconfirmed. Check consumer health and outbox dispatch before considering a replay."
+  },
+  "recovered": {
+    "route": "decision",
+    "reference": "3BB5B24C-481F-4EA0-88AA-8C88B128C106",
+    "snapshot": {
+      "id": "3bb5b24c-481f-4ea0-88aa-8c88b128c106",
+      "amountMinor": 1250,
+      "currency": "EUR",
+      "status": "DECIDED",
+      "attempts": 1,
+      "decision": "ALLOW"
+    },
+    "title": "Decision already recorded",
+    "evidence": "DECIDED indicates that a risk decision has already been stored.",
+    "action": "Use the existing decision. Compare references if the customer reports a duplicate."
+  },
+  "duplicate_after_restart": true
+}
